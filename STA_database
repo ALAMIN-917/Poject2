@@ -1,0 +1,57 @@
+-- Use your database (or create one)
+CREATE DATABASE IF NOT EXISTS college_db;
+USE college_db;
+
+-- STUDENT
+CREATE TABLE IF NOT EXISTS student (
+  roll_no INT PRIMARY KEY,
+  reg_no VARCHAR(32) UNIQUE,
+  name   VARCHAR(100) NOT NULL,
+  phone  VARCHAR(32),
+  email  VARCHAR(100),
+  dept   VARCHAR(64)
+);
+
+-- TEACHER
+CREATE TABLE IF NOT EXISTS teacher (
+  id      INT PRIMARY KEY,
+  name    VARCHAR(100) NOT NULL,
+  subject VARCHAR(100) NOT NULL,
+  dept    VARCHAR(64)
+);
+
+-- ATTENDANCE
+CREATE TABLE IF NOT EXISTS attendance (
+  roll_no INT,
+  reg_no  VARCHAR(32),
+  name    VARCHAR(100) NOT NULL,
+  subject VARCHAR(100) NOT NULL,
+  attendance INT DEFAULT 0,          -- store as integer points; change to DECIMAL if you prefer %
+  PRIMARY KEY (roll_no, subject),
+  CONSTRAINT fk_att_roll FOREIGN KEY (roll_no) REFERENCES student(roll_no) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_att_reg  FOREIGN KEY (reg_no)  REFERENCES student(reg_no)  ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- MID-MARK (3 mids)
+CREATE TABLE IF NOT EXISTS mid_mark (
+  roll_no INT,
+  reg_no  VARCHAR(32),
+  name    VARCHAR(100) NOT NULL,
+  subject VARCHAR(100) NOT NULL,
+  mid1 INT DEFAULT 0,
+  mid2 INT DEFAULT 0,
+  mid3 INT DEFAULT 0,
+  PRIMARY KEY (roll_no, subject),
+  CONSTRAINT fk_mid_roll FOREIGN KEY (roll_no) REFERENCES student(roll_no) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_mid_reg  FOREIGN KEY (reg_no)  REFERENCES student(reg_no)  ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- C-GPA
+CREATE TABLE IF NOT EXISTS c_gpa (
+  roll_no INT PRIMARY KEY,
+  reg_no  VARCHAR(32) UNIQUE,
+  name    VARCHAR(100) NOT NULL,
+  c_gpa   DECIMAL(3,2) DEFAULT 0.00,
+  CONSTRAINT fk_cgpa_roll FOREIGN KEY (roll_no) REFERENCES student(roll_no) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_cgpa_reg  FOREIGN KEY (reg_no)  REFERENCES student(reg_no)  ON DELETE CASCADE ON UPDATE CASCADE
+);
